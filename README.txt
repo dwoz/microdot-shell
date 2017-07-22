@@ -22,7 +22,8 @@ How to I use it?
 
     $ md init
     $ md remote add origin git@github.com:mygithub/mydotfiles.git
-    $ md commit ~/.bashrc
+    $ md commit ~/.bashrc -m 'Adding my .bashrc file'
+    $ md push origin master
 
   - Use an existing dotfiles data git repo
 
