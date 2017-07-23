@@ -7,9 +7,19 @@ function microdot {
   MD_GIT_HOME=${MD_GIT_HOME:="$HOME"}
   MD_GIT_DIR=${MD_GIT_DIR:-.dotgit}
   OVERRIDE_UNTRACKED=0
-  STATUS_CMD=0
+  CAN_OVERRIDE_UNTRACKED=0
   STATUS_CHECK=0
-  ARGS="${@}"
+  function requote() {
+      local res=""
+      for x in "${@}" ; do
+          # try to figure out if quoting was required for the $x:
+          grep -q "[[:space:]]" <<< "$x" && res="${res} '${x}'" || res="${res} ${x}"
+      done
+      # remove first space and print:
+      sed -e 's/^ //' <<< "${res}"
+  }
+  ARGS=$(requote "${@}")
+
   while [[ $# -gt 0 ]]
   do
     arg="$1"
@@ -18,8 +28,8 @@ function microdot {
       --md-check)
         STATUS_CHECK=1
       ;;
-      status)
-        STATUS_CMD=1
+      status|commit)
+        CAN_OVERRIDE_UNTRACKED=1
       ;;
       -u*|--untracked-files=*)
         OVERRIDE_UNTRACKED=1
@@ -31,8 +41,8 @@ function microdot {
     shift
   done
   GITCMD=(
-    "${MD_GIT_BIN} "
-    "--git-dir=${MD_GIT_HOME}/${MD_GIT_DIR}/ " 
+    "${MD_GIT_BIN}"
+    "--git-dir=${MD_GIT_HOME}/${MD_GIT_DIR}/"
     "--work-tree=${MD_GIT_HOME}"
   )
   GITCMD="${GITCMD[@]}"
@@ -56,13 +66,13 @@ function microdot {
       return 0
 
   fi
-  echo "microdot: $MD_GIT_HOME/$MD_GIT_DIR"
-  if [ $OVERRIDE_UNTRACKED -eq 0 ] && [ $STATUS_CMD -eq 1 ]; then
+  echo "microdot: ${GITCMD} ${ARGS}"
+  if [ $OVERRIDE_UNTRACKED -eq 0 ] && [ $CAN_OVERRIDE_UNTRACKED -eq 1 ]; then
       # echo "Override: $ARGS"
-      $GITCMD $ARGS -uno
+      bash -c "${GITCMD} ${ARGS} -uno"
   else
       # echo "No override: $ARGS"
-      $GITCMD $ARGS
+      bash -c "${GITCMD} ${ARGS}"
   fi
 
 }
