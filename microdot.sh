@@ -78,10 +78,10 @@ function microdot {
 
   if [ $STATUS_CHECK -eq 1 ]; then
 
-      if ! $($GITCMD remote update 2>&1 > /dev/null); then
+      if [ ! $($GITCMD remote update 2>&1 > /dev/null) ]; then
           return 1;
       fi
-      UPSTREAM=${1:-'@{u}'}
+      #UPSTREAM=${1:-'@{u}'}
       LOCAL=$($GITCMD rev-parse @)
       REMOTE=$($GITCMD rev-parse "$UPSTREAM")
       BASE=$($GITCMD merge-base @ "$UPSTREAM")
@@ -91,10 +91,10 @@ function microdot {
           echo "microdot data as upstream changes"
       elif [ $REMOTE = $BASE ]; then
           echo "microdot data has local changes"
-      else
+      else;
           echo "microdot data has both local and upstream changes"
       fi
-      return 0
+      return 0;
 
   fi
 
