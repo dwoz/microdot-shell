@@ -91,7 +91,7 @@ function microdot {
           echo "microdot data as upstream changes"
       elif [ $REMOTE = $BASE ]; then
           echo "microdot data has local changes"
-      else;
+      else
           echo "microdot data has both local and upstream changes"
       fi
       return 0;
@@ -100,10 +100,10 @@ function microdot {
 
   echo "microdot: ${GITCMD} ${ARGS}"
 
-  if [ #CLONE_CMD -eq 1 ];then
-     bash -c "${GITCMD} ${ARGS} /tmp/.mdtmp"
-     rm -rf ./tmp/mdtmp
-     return 0
+  if [ $CLONE_CMD -eq 1 ]; then
+     bash -c "${GITCMD} ${ARGS} /tmp/.mdtmp";
+     rm -rf ./tmp/mdtmp;
+     return 0;
   fi
 
   if [ $OVERRIDE_UNTRACKED -eq 0 ] && [ $CAN_OVERRIDE_UNTRACKED -eq 1 ]; then
