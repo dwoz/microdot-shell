@@ -65,6 +65,7 @@ function microdot {
   if [ $CLONE_CMD -eq 1 ]; then
       GITCMD=(
         "${MD_GIT_BIN}"
+	"${ARGS}"
         "--separate-git-dir=${MD_GIT_HOME}/${MD_GIT_DIR}"
       )
   else
@@ -101,8 +102,8 @@ function microdot {
   echo "microdot: ${GITCMD} ${ARGS}"
 
   if [ $CLONE_CMD -eq 1 ]; then
-     bash -c "${GITCMD} ${ARGS} /tmp/.mdtmp";
-     rm -rf ./tmp/mdtmp;
+     bash -c "${GITCMD} /tmp/.mdtmp";
+     rm -rf ./tmp/.mdtmp;
      return 0;
   fi
 
